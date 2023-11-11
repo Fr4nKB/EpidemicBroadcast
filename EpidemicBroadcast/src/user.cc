@@ -20,7 +20,7 @@ void User::initialize() {
         cModule* floor = getParentModule();
     }
     catch(e) {
-        EV_ERROR<<"USER-INITIALIZE: Couldn't retrieve floor module\n";
+        EV_ERROR<<"initialize: Couldn't retrieve floor module\n";
     }
 
     slotDuration = floor->par("slotDuration").doubleValue();
@@ -41,7 +41,7 @@ void User::initialize() {
         }
     }
     catch(e) {
-        EV_ERROR<<"USER-INITIALIZE: Couldn't retrieve module index in initialize method\n";
+        EV_ERROR<<"initialize: Couldn't retrieve module index in initialize method\n";
         return;
     }
 
@@ -64,29 +64,48 @@ void User::handleMessage(cMessage *msg) {
     //handle message from another user
     else {
         msgCopies[elapsedTimeSlots] += 1;
-        msgToRelay = msg->dup();
+        if(msgToRelay == nullptr) msgToRelay = msg->dup();
     }
 }
 
 void User::handleSlotMsg(cMessage* msg) {
 
+    //check for collisions
     if(elapsedTimeSlots < nSlot2Wait) {
         if(msgCopies[elapsedTimeSlots] > 1) {
             collision = true;
+            EV_WARNING<<"handleSlotMsg: collision\n";
         }
     }
+    //maximum time slots to wait reached
     else if(elapsedTimeSlots == nSlot2Wait){
+
         int totCopies = 0, indexNoCollision = -1;
         for(int i = 0; i < maxMsgCopies; i++) {
             totCopies += msgCopies[i];
-            if(msgCopies[i] == 1) indexNoCollision = i;
+            if(msgCopies[i] == 1) indexNoCollision = i; //one slot without collision is sufficient
         }
-        if(totCopies < maxMsgCopies && indexNoCollision != -1) {
-            broadcast();
-            msgRelayed = true;
+
+        //message is sent only if there's at least one slot with no collisions and if number of message copies are below maximum
+        if(totCopies < maxMsgCopies) {
+
+            if(indexNoCollision != -1) {
+                broadcast();
+                msgRelayed = true;
+            }
+
+            //reset counters, user can still relay the message
+            else {
+                EV_WARNING<<"handleSlotMsg: max copies not reached but too many collisions\n";
+                collision = false;
+                elapsedTimeSlots = -1;  //set to -1 so at end of the method it's set to 0
+                std::fill(msgCopies, msgCopies + maxMsgCopies, 0);
+            }
         }
+
         else {
             toManyMessage = true;
+            EV_WARNING<<"handleSlotMsg: to many copies of the messages\n";
         }
     }
 
@@ -103,5 +122,5 @@ void User::broadcast() {
         send(copy, "gate$o",i);
     }
 
-    delete msg;
+    delete msgToRelay;
 }
