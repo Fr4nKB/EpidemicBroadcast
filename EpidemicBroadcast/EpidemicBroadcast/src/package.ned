@@ -1,0 +1,3 @@
+package epidemicbroadcast;
+
+@license(LGPL);

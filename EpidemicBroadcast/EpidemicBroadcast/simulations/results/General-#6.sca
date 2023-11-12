@@ -1,0 +1,45 @@
+version 3
+run General-6-20231112-12:54:48-12444
+attr configname General
+attr datetime 20231112-12:54:48
+attr datetimef 20231112-125448
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Floor
+attr processid 12444
+attr repetition 6
+attr replication #6
+attr resultdir results
+attr runnumber 6
+attr seedset 6
+config network Floor
+config repeat 10
+config seed-set 6
+config Floor.userNumber 3
+config Floor.floorX 50
+config Floor.floorY 50
+
+par Floor.user[0] typename "\"epidemicbroadcast.User\""
+par Floor.user[0] coordX 47.3738
+par Floor.user[0] coordY 16.599
+par Floor.user[1] typename "\"epidemicbroadcast.User\""
+par Floor.user[1] coordX 10.4703
+par Floor.user[1] coordY 41.0615
+par Floor.user[2] typename "\"epidemicbroadcast.User\""
+par Floor.user[2] coordX 3.21273
+par Floor.user[2] coordY 2.08483
+par Floor typename "\"epidemicbroadcast.simulations.Floor\""
+par Floor userNumber 3
+par Floor floorX 50
+par Floor floorY 50
+par Floor slotDuration 1s
+attr unit s
+par Floor nSlot2Wait 5
+par Floor maxMsgCopies 3
+par Floor radius 20
+par Floor producerIndex 2
+
