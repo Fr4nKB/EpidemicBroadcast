@@ -25,9 +25,36 @@ using namespace omnetpp;
  */
 class User : public cSimpleModule
 {
-  protected:
-    virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
+    private:
+        //parameters
+        double slotDuration = 1.0;
+        int nSlot2Wait = 0;
+        int maxMsgCopies = 0;
+        int producerIndex = 0;
+
+        //pointers
+        cMessage* timeMsg = nullptr;
+        cMessage* msgToRelay = nullptr;
+
+        //status
+        bool msgRelayed = false;
+        bool toManyMsg = false;
+        std::vector<int> msgCopies;
+
+        //counters
+        int elapsedTimeSlots = 0;
+
+        //methods
+        void handleCustomMsg(cMessage*);
+        void broadcast();
+
+
+    protected:
+        virtual void initialize() override;
+        virtual void handleMessage(cMessage *msg) override;
+
+    public:
+        User();
 };
 
 #endif

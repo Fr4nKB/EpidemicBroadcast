@@ -1,14 +1,14 @@
 #include "user.h"
+#include <string>
 
 Define_Module(User);
 
-User::User() : cSimpleModule() {
+User::User():cSimpleModule() {
     //pointers
     msgToRelay = nullptr;
 
     //status
     msgRelayed = false;
-    collision = false;
 
     //counters
     elapsedTimeSlots = 0;
@@ -16,32 +16,33 @@ User::User() : cSimpleModule() {
 
 void User::initialize() {
     //retrieve parameters
-    try{
-        cModule* floor = getParentModule();
+    cModule* floor;
+    try {
+         floor = getParentModule();
     }
-    catch(e) {
-        EV_ERROR<<"initialize: Couldn't retrieve floor module\n";
+    catch(...) {
+        EV_ERROR<<"initialize "+std::to_string(this->getIndex())+": Couldn't retrieve floor module\n";
+        return;
     }
 
     slotDuration = floor->par("slotDuration").doubleValue();
     nSlot2Wait = floor->par("nSlot2Wait");
     maxMsgCopies = floor->par("maxMsgCopies");
-    nSlot2Wait = floor->par("nSlot2Wait");
     producerIndex = floor->par("producerIndex");
 
-    int msgCopies[maxMsgCopies];    //array to count message copies and collisions
-    std::fill(msgCopies, msgCopies + maxMsgCopies, 0);  //initialize to 0
+    msgCopies.assign(maxMsgCopies, 0);
 
     //if module is producer send message
     try{
         if(this->getIndex() == producerIndex){
             msgToRelay = new cMessage("Hello!");
-            broadCast();
+            broadcast();
             msgRelayed = true;
+            return;
         }
     }
-    catch(e) {
-        EV_ERROR<<"initialize: Couldn't retrieve module index in initialize method\n";
+    catch(...) {
+        EV_ERROR<<"initialize "+std::to_string(this->getIndex())+": Couldn't retrieve module index in initialize method\n";
         return;
     }
 
@@ -58,7 +59,7 @@ void User::handleMessage(cMessage *msg) {
 
     //slot time message, update counters
     if(msg->isSelfMessage()) {
-        handleSlotMsg(msg);
+        handleCustomMsg(msg);
     }
 
     //handle message from another user
@@ -68,15 +69,18 @@ void User::handleMessage(cMessage *msg) {
     }
 }
 
-void User::handleSlotMsg(cMessage* msg) {
+void User::handleCustomMsg(cMessage* msg) {
 
     //check for collisions
     if(elapsedTimeSlots < nSlot2Wait) {
         if(msgCopies[elapsedTimeSlots] > 1) {
-            collision = true;
-            EV_WARNING<<"handleSlotMsg: collision\n";
+            EV<<"handleSlotMsg "+std::to_string(this->getIndex())+": collision\n";
         }
+
+        elapsedTimeSlots += 1;
+        scheduleAt(simTime()+slotDuration, timeMsg);
     }
+
     //maximum time slots to wait reached
     else if(elapsedTimeSlots == nSlot2Wait){
 
@@ -96,25 +100,32 @@ void User::handleSlotMsg(cMessage* msg) {
 
             //reset counters, user can still relay the message
             else {
-                EV_WARNING<<"handleSlotMsg: max copies not reached but too many collisions\n";
-                collision = false;
+                EV<<"handleSlotMsg "+std::to_string(this->getIndex())+": max copies not reached but too many collisions\n";
+                for(int i = 0; i < maxMsgCopies; i++) {
+                    EV<<std::to_string(msgCopies[i])+"\n";
+                }
                 elapsedTimeSlots = -1;  //set to -1 so at end of the method it's set to 0
-                std::fill(msgCopies, msgCopies + maxMsgCopies, 0);
+                msgCopies.clear();
+                msgCopies.assign(maxMsgCopies, 0);
             }
         }
 
         else {
-            toManyMessage = true;
-            EV_WARNING<<"handleSlotMsg: to many copies of the messages\n";
+            toManyMsg = true;
+            EV<<"handleSlotMsg: to many copies of the messages\n";
+        }
+
+        if(msgToRelay != nullptr) {
+            delete msgToRelay;
+            msgToRelay = nullptr;
         }
     }
-
-    elapsedTimeSlots += 1;
-    scheduleAt(simTime()+slotDuration, timeMsg);
 }
 
 //relay message to neighbors
 void User::broadcast() {
+    if(msgToRelay == nullptr) return;
+
     int nGates = this->gateCount()/2;
 
     for(int i = 0; i < nGates; i++) {
@@ -123,4 +134,5 @@ void User::broadcast() {
     }
 
     delete msgToRelay;
+    msgToRelay = nullptr;
 }

@@ -8,8 +8,8 @@ network Floor
         int userNumber = default(100);
         
         //floor dimensions
-        double floorX @unit(m) = default(150m);
-		double floorY @unit(m) = default(150m);
+        double floorX = default(150);
+		double floorY = default(150);
         
         //slot duration
         double slotDuration @unit(s) = default(1s);
@@ -21,23 +21,23 @@ network Floor
         int maxMsgCopies = default(3);
         
         //user radius
-        double radius @unit(m) = default(20m);
+        double radius = default(20);
         
         //choose a random user as producer
-        int producerIndex = default(intuniform(0, userCount-1));
+        int producerIndex = default(intuniform(0, userNumber-1));
         
     submodules:
-        user[nodeNumber]: User {
+        user[userNumber]: User {
         	parameters:
-            	coordX = uniform(0, floorX);
-            	coordY = uniform(0, floorX);
+            	coordX = default(uniform(0, parent.floorX));
+            	coordY = default(uniform(0, parent.floorY));
             	@display("p=$coordX, $coordY");
                 @display("r=$radius");
         }
         
     connections:
         for i = 0..userNumber-1, for j= 0..userNumber-1{
-            user[i].gate++ <--> user[j].gate++ if i!=j && ((user[i].coordX - user[j].coordX)^2 + (user[i].coordY - user[j].coordY)^2) <= R^2;
+            user[i].gate++ <--> user[j].gate++ if i!=j && ((user[i].coordX - user[j].coordX)^2 + (user[i].coordY - user[j].coordY)^2) <= radius^2;
         }
             
 }
