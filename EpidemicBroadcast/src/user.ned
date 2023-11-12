@@ -8,5 +8,6 @@ simple User
     
     gates:
         //two way connections
-        inout gate[];
+        input gateIN[];
+        output gateOUT[];
 }

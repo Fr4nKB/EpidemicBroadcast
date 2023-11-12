@@ -37,7 +37,7 @@ network Floor
         
     connections:
         for i = 0..userNumber-1, for j= 0..userNumber-1{
-            user[i].gate++ <--> user[j].gate++ if i!=j && ((user[i].coordX - user[j].coordX)^2 + (user[i].coordY - user[j].coordY)^2) <= radius^2;
+            user[i].gateOUT++ --> user[j].gateIN++ if i!=j && ((user[i].coordX - user[j].coordX)^2 + (user[i].coordY - user[j].coordY)^2) <= radius^2;
         }
             
 }

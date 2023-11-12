@@ -39,7 +39,7 @@ class User : public cSimpleModule
         //status
         bool msgRelayed = false;
         bool toManyMsg = false;
-        std::vector<int> msgCopies;
+        std::map<int, int> msgCopies;
 
         //counters
         int elapsedTimeSlots = 0;

@@ -29,20 +29,13 @@ void User::initialize() {
     nSlot2Wait = floor->par("nSlot2Wait");
     maxMsgCopies = floor->par("maxMsgCopies");
     producerIndex = floor->par("producerIndex");
-
-    msgCopies.assign(maxMsgCopies, 0);
+    msgCopies[0] = 0;
 
     //if module is producer send message
-    try{
-        if(this->getIndex() == producerIndex){
-            msgToRelay = new cMessage("Hello!");
-            broadcast();
-            msgRelayed = true;
-            return;
-        }
-    }
-    catch(...) {
-        EV_ERROR<<"initialize "+std::to_string(this->getIndex())+": Couldn't retrieve module index in initialize method\n";
+    if(this->getIndex() == producerIndex){
+        msgToRelay = new cMessage("Hello!");
+        broadcast();
+        msgRelayed = true;
         return;
     }
 
@@ -78,22 +71,25 @@ void User::handleCustomMsg(cMessage* msg) {
         }
 
         elapsedTimeSlots += 1;
+        msgCopies[elapsedTimeSlots] = 0;    //create new element
         scheduleAt(simTime()+slotDuration, timeMsg);
     }
 
     //maximum time slots to wait reached
     else if(elapsedTimeSlots == nSlot2Wait){
 
-        int totCopies = 0, indexNoCollision = -1;
-        for(int i = 0; i < maxMsgCopies; i++) {
-            totCopies += msgCopies[i];
-            if(msgCopies[i] == 1) indexNoCollision = i; //one slot without collision is sufficient
+        int totCopies = 0;
+        bool indexNoCollision = false;
+
+        for(auto i: msgCopies) {
+            totCopies += i.second;
+            if(i.second == 1) indexNoCollision = true; //one slot without collision is sufficient
         }
 
         //message is sent only if there's at least one slot with no collisions and if number of message copies are below maximum
         if(totCopies < maxMsgCopies) {
 
-            if(indexNoCollision != -1) {
+            if(indexNoCollision) {
                 broadcast();
                 msgRelayed = true;
             }
@@ -101,13 +97,11 @@ void User::handleCustomMsg(cMessage* msg) {
             //reset counters, user can still relay the message
             else {
                 EV<<"handleSlotMsg "+std::to_string(this->getIndex())+": max copies not reached but too many collisions\n";
-                for(int i = 0; i < maxMsgCopies; i++) {
-                    EV<<std::to_string(msgCopies[i])+"\n";
-                }
                 elapsedTimeSlots = -1;  //set to -1 so at end of the method it's set to 0
                 msgCopies.clear();
-                msgCopies.assign(maxMsgCopies, 0);
+                msgCopies[0] = 0;
             }
+
         }
 
         else {
@@ -130,7 +124,7 @@ void User::broadcast() {
 
     for(int i = 0; i < nGates; i++) {
         cMessage* copy = msgToRelay->dup();
-        send(copy, "gate$o",i);
+        send(copy, "gateOUT", i);
     }
 
     delete msgToRelay;
