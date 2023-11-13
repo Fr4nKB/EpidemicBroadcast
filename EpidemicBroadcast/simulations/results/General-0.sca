@@ -1,0 +1,68 @@
+version 3
+run General-0-20231113-17:36:44-1212
+attr configname General
+attr datetime 20231113-17:36:44
+attr datetimef 20231113-173644
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Floor
+attr processid 1212
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config sim-time-limit 150s
+config network Floor
+config seed-set 0
+config output-scalar-file results/General-0.sca
+config output-vector-file results/General-0.vec
+config Floor.userNumber 10
+config Floor.floorX 40
+config Floor.floorY 40
+
+par Floor.user[0] typename "\"epidemicbroadcast.User\""
+par Floor.user[0] coordX 33.7706
+par Floor.user[0] coordY 24.1105
+par Floor.user[1] typename "\"epidemicbroadcast.User\""
+par Floor.user[1] coordX 34.3178
+par Floor.user[1] coordY 21.7953
+par Floor.user[2] typename "\"epidemicbroadcast.User\""
+par Floor.user[2] coordX 33.8901
+par Floor.user[2] coordY 16.9462
+par Floor.user[3] typename "\"epidemicbroadcast.User\""
+par Floor.user[3] coordX 24.9425
+par Floor.user[3] coordY 25.8358
+par Floor.user[4] typename "\"epidemicbroadcast.User\""
+par Floor.user[4] coordX 15.3753
+par Floor.user[4] coordY 17.5035
+par Floor.user[5] typename "\"epidemicbroadcast.User\""
+par Floor.user[5] coordX 11.9014
+par Floor.user[5] coordY 35.6709
+par Floor.user[6] typename "\"epidemicbroadcast.User\""
+par Floor.user[6] coordX 2.26852
+par Floor.user[6] coordY 38.5465
+par Floor.user[7] typename "\"epidemicbroadcast.User\""
+par Floor.user[7] coordX 10.9063
+par Floor.user[7] coordY 15.3377
+par Floor.user[8] typename "\"epidemicbroadcast.User\""
+par Floor.user[8] coordX 19.1066
+par Floor.user[8] coordY 31.669
+par Floor.user[9] typename "\"epidemicbroadcast.User\""
+par Floor.user[9] coordX 32.4867
+par Floor.user[9] coordY 21.1558
+par Floor typename "\"epidemicbroadcast.simulations.Floor\""
+par Floor userNumber 10
+par Floor floorX 40
+par Floor floorY 40
+par Floor slotDuration 1s
+attr unit s
+par Floor nSlot2Wait 5
+par Floor maxMsgCopies 3
+par Floor radius 20
+par Floor producerIndex 5
+

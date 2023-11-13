@@ -20,9 +20,6 @@
 
 using namespace omnetpp;
 
-/**
- * TODO - Generated class
- */
 class User : public cSimpleModule
 {
     private:
@@ -32,20 +29,25 @@ class User : public cSimpleModule
         int maxMsgCopies = 0;
         int producerIndex = 0;
 
+        //signals
+        simsignal_t covered;
+        simsignal_t collisionCounter;
+
         //pointers
         cMessage* timeMsg = nullptr;
         cMessage* msgToRelay = nullptr;
 
         //status
         bool msgRelayed = false;
-        bool toManyMsg = false;
-        std::map<int, int> msgCopies;
+        int msgRcvAtSlot = -1;
 
         //counters
         int elapsedTimeSlots = 0;
+        int msgRcvInCurrSlot = 0;
+        int totCopies = 0;
 
         //methods
-        void handleCustomMsg(cMessage*);
+        void handleTimeSlot(cMessage*);
         void broadcast();
 
 
@@ -53,8 +55,6 @@ class User : public cSimpleModule
         virtual void initialize() override;
         virtual void handleMessage(cMessage *msg) override;
 
-    public:
-        User();
 };
 
 #endif

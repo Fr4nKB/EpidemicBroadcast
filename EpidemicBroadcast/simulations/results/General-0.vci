@@ -1,0 +1,39 @@
+file 974 1699893431                                             
+version 3
+run General-0-20231113-17:36:44-1212
+attr configname General
+attr datetime 20231113-17:36:44
+attr datetimef 20231113-173644
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Floor
+attr processid 1212
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config sim-time-limit 150s
+config network Floor
+config seed-set 0
+config output-scalar-file results/General-0.sca
+config output-vector-file results/General-0.vec
+config Floor.userNumber 10
+config Floor.floorX 40
+config Floor.floorY 40
+
+vector 0 Floor coverageStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source covered
+vector 1 Floor collisionStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source collision
+0	869 80 10 84 0 7 8 1 1 8 8
+1	949 23 103 152 8 14 2 2 3 5 13
+

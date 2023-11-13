@@ -3,17 +3,6 @@
 
 Define_Module(User);
 
-User::User():cSimpleModule() {
-    //pointers
-    msgToRelay = nullptr;
-
-    //status
-    msgRelayed = false;
-
-    //counters
-    elapsedTimeSlots = 0;
-}
-
 void User::initialize() {
     //retrieve parameters
     cModule* floor;
@@ -29,15 +18,18 @@ void User::initialize() {
     nSlot2Wait = floor->par("nSlot2Wait");
     maxMsgCopies = floor->par("maxMsgCopies");
     producerIndex = floor->par("producerIndex");
-    msgCopies[0] = 0;
 
     //if module is producer send message
     if(this->getIndex() == producerIndex){
         msgToRelay = new cMessage("Hello!");
         broadcast();
         msgRelayed = true;
+        emit(covered, 1);
         return;
     }
+
+    covered = registerSignal("covered");
+    collisionCounter = registerSignal("collision");
 
     //empty message to slot time
     timeMsg = new cMessage();
@@ -52,68 +44,62 @@ void User::handleMessage(cMessage *msg) {
 
     //slot time message, update counters
     if(msg->isSelfMessage()) {
-        handleCustomMsg(msg);
+        handleTimeSlot(msg);
     }
 
     //handle message from another user
     else {
-        msgCopies[elapsedTimeSlots] += 1;
+        msgRcvInCurrSlot += 1;
         if(msgToRelay == nullptr) msgToRelay = msg->dup();
     }
 }
 
-void User::handleCustomMsg(cMessage* msg) {
 
-    //check for collisions
-    if(elapsedTimeSlots < nSlot2Wait) {
-        if(msgCopies[elapsedTimeSlots] > 1) {
-            EV<<"handleSlotMsg "+std::to_string(this->getIndex())+": collision\n";
+void User::handleTimeSlot(cMessage* msg) {
+
+    if(msgRcvAtSlot == -1) {
+        //message correctly received in current slot
+        if(msgRcvInCurrSlot == 1) {
+            //wait "nSlot2Wait" to broadcast message from the current slot (excluded, hence +1)
+            msgRcvAtSlot = elapsedTimeSlots + 1;
+            emit(covered, 1);
+            EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): message correctly received\n";
         }
 
-        elapsedTimeSlots += 1;
-        msgCopies[elapsedTimeSlots] = 0;    //create new element
-        scheduleAt(simTime()+slotDuration, timeMsg);
+        //otherwise save collision
+        else if(msgRcvInCurrSlot > 1){
+            emit(collisionCounter, msgRcvInCurrSlot);
+            EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): collision\n";
+        }
     }
 
-    //maximum time slots to wait reached
-    else if(elapsedTimeSlots == nSlot2Wait){
+    //message already received, waiting for nSlot2Wait before relaying
+    else {
+        totCopies += msgRcvInCurrSlot;
 
-        int totCopies = 0;
-        bool indexNoCollision = false;
+        //maximum time slots to wait reached
+        if(elapsedTimeSlots == msgRcvAtSlot + nSlot2Wait) {
 
-        for(auto i: msgCopies) {
-            totCopies += i.second;
-            if(i.second == 1) indexNoCollision = true; //one slot without collision is sufficient
-        }
-
-        //message is sent only if there's at least one slot with no collisions and if number of message copies are below maximum
-        if(totCopies < maxMsgCopies) {
-
-            if(indexNoCollision) {
+            //message is sent only if number of message copies are below maximum
+            if(totCopies < maxMsgCopies) {
                 broadcast();
                 msgRelayed = true;
+                EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): message broadcasted\n";
             }
 
-            //reset counters, user can still relay the message
             else {
-                EV<<"handleSlotMsg "+std::to_string(this->getIndex())+": max copies not reached but too many collisions\n";
-                elapsedTimeSlots = -1;  //set to -1 so at end of the method it's set to 0
-                msgCopies.clear();
-                msgCopies[0] = 0;
+                EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): to many copies of the messages\n";
+                delete msgToRelay;
+                msgToRelay = nullptr;
             }
 
-        }
-
-        else {
-            toManyMsg = true;
-            EV<<"handleSlotMsg: to many copies of the messages\n";
-        }
-
-        if(msgToRelay != nullptr) {
-            delete msgToRelay;
-            msgToRelay = nullptr;
+            return;
         }
     }
+
+    msgRcvInCurrSlot = 0;
+    elapsedTimeSlots += 1;
+    scheduleAt(simTime()+slotDuration, timeMsg);
 }
 
 //relay message to neighbors

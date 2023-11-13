@@ -26,6 +26,11 @@ network Floor
         //choose a random user as producer
         int producerIndex = default(intuniform(0, userNumber-1));
         
+        @signal[covered](type="short");
+        @statistic[coverageStat](source="covered"; record=vector;);
+        
+        @statistic[collisionStat](source="collision"; record=vector;);
+        
     submodules:
         user[userNumber]: User {
         	parameters:
