@@ -1,6 +1,7 @@
 package epidemicbroadcast.simulations;
 
 import epidemicbroadcast.User;
+import epidemicbroadcast.Supervisor;
 
 network Floor
 {
@@ -29,9 +30,8 @@ network Floor
         @signal[covered](type="short");
         @statistic[coverageStat](source="covered"; record=vector;);
         
-        @statistic[collisionStat](source="collision"; record=vector;);
-        
     submodules:
+        sup: Supervisor;
         user[userNumber]: User {
         	parameters:
             	coordX = default(uniform(0, parent.floorX));
@@ -43,6 +43,9 @@ network Floor
     connections:
         for i = 0..userNumber-1, for j= 0..userNumber-1{
             user[i].gateOUT++ --> user[j].gateIN++ if i!=j && ((user[i].coordX - user[j].coordX)^2 + (user[i].coordY - user[j].coordY)^2) <= radius^2;
+        }
+        for i = 0..userNumber-1 {
+            user[i].gateSupOut --> sup.gateIN++;
         }
             
 }

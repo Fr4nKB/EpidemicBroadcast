@@ -1,18 +1,13 @@
 #include "user.h"
 #include <string>
 
+using namespace std;
+
 Define_Module(User);
 
 void User::initialize() {
     //retrieve parameters
-    cModule* floor;
-    try {
-         floor = getParentModule();
-    }
-    catch(...) {
-        EV_ERROR<<"initialize "+std::to_string(this->getIndex())+": Couldn't retrieve floor module\n";
-        return;
-    }
+    cModule* floor = getParentModule();
 
     slotDuration = floor->par("slotDuration").doubleValue();
     nSlot2Wait = floor->par("nSlot2Wait");
@@ -23,7 +18,7 @@ void User::initialize() {
     if(this->getIndex() == producerIndex){
         msgToRelay = new cMessage("Hello!");
         broadcast();
-        msgRelayed = true;
+        finished = true;
         emit(covered, 1);
         return;
     }
@@ -38,7 +33,7 @@ void User::initialize() {
 
 void User::handleMessage(cMessage *msg) {
     //user has already done its job
-    if(msgRelayed) {
+    if(finished) {
         return;
     }
 
@@ -63,13 +58,17 @@ void User::handleTimeSlot(cMessage* msg) {
             //wait "nSlot2Wait" to broadcast message from the current slot (excluded, hence +1)
             msgRcvAtSlot = elapsedTimeSlots + 1;
             emit(covered, 1);
-            EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): message correctly received\n";
+            cMessage* inc = new cMessage("inc");
+            send(inc, "gateSupOut");
+            EV<<"handleCustomMsg (USER "+to_string(this->getIndex())+"): message correctly received\n";
         }
 
         //otherwise save collision
         else if(msgRcvInCurrSlot > 1){
-            emit(collisionCounter, msgRcvInCurrSlot);
-            EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): collision\n";
+            delete msgToRelay;
+            msgToRelay = nullptr;
+            emit(collisionCounter, string("user").c_str());
+            EV<<"handleCustomMsg (USER "+to_string(this->getIndex())+"): collision\n";
         }
     }
 
@@ -83,16 +82,17 @@ void User::handleTimeSlot(cMessage* msg) {
             //message is sent only if number of message copies are below maximum
             if(totCopies < maxMsgCopies) {
                 broadcast();
-                msgRelayed = true;
-                EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): message broadcasted\n";
+                EV<<"handleCustomMsg (USER "+to_string(this->getIndex())+"): message broadcasted\n";
             }
 
             else {
-                EV<<"handleCustomMsg (USER "+std::to_string(this->getIndex())+"): to many copies of the messages\n";
+                EV<<"handleCustomMsg (USER "+to_string(this->getIndex())+"): to many copies of the messages\n";
                 delete msgToRelay;
                 msgToRelay = nullptr;
             }
-
+            cMessage* dec = new cMessage("dec");
+            send(dec, "gateSupOut");
+            finished = true;
             return;
         }
     }
