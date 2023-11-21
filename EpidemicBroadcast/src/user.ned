@@ -6,11 +6,10 @@ simple User
         double coordX = default(0);
         double coordY = default(0);
         
-        @signal[collision](type="string");
+        @signal[covered](type="double");
+        @signal[collision](type="unsigned int");
+        @statistic[collisionStat](source="collision"; record=vector;);
         
     gates:
-        //two way connections
-        input gateIN[];
-        output gateOUT[];
-        output gateSupOut;
+        input dirInGate @directIn;
 }

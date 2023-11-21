@@ -2,6 +2,9 @@ package epidemicbroadcast;
 
 simple Supervisor
 {   
+    parameters:
+        @signal[simTimeEndSig](type="double");
+        
     gates:
-        input gateIN[];
+        input dirInGate @directIn;
 }

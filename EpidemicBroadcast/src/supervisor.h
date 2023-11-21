@@ -12,13 +12,17 @@ class Supervisor : public cSimpleModule
         double slotDuration = 1.0;
         int nSlot2Wait = 0;
 
-        //status
-        bool ready = false;
+        //signals
+        simsignal_t simTimeEndSig;
 
         //pointers
         cMessage* syncMsg = nullptr;
         cMessage* waitMsg = nullptr;
         cMessage* endMsg = nullptr;
+
+        //status
+        bool ready = false;
+        double endSimTime = 0.0;
 
         //counters
         int activeNodes = 0;
