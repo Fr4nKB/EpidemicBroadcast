@@ -1,0 +1,78 @@
+version 3
+run General-1-20231124-10:38:44-20840
+attr configname General
+attr datetime 20231124-10:38:44
+attr datetimef 20231124-103844
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Floor
+attr processid 20840
+attr repetition 1
+attr replication #1
+attr resultdir results
+attr runnumber 1
+attr seedset 1
+config sim-time-limit 50s
+config network Floor
+config repeat 2
+config output-scalar-file results/General-1.sca
+config output-vector-file results/General-1.vec
+config Floor.userNumber 10
+config Floor.floorX 10
+config Floor.floorY 10
+config Floor.radius 8
+
+par Floor.sup typename "\"epidemicbroadcast.Supervisor\""
+par Floor.user[0] typename "\"epidemicbroadcast.User\""
+par Floor.user[0] coordX 9.97185
+par Floor.user[0] coordY 7.20324
+par Floor.user[1] typename "\"epidemicbroadcast.User\""
+par Floor.user[1] coordX 9.32557
+par Floor.user[1] coordY 0.00114381
+par Floor.user[2] typename "\"epidemicbroadcast.User\""
+par Floor.user[2] coordX 1.28124
+par Floor.user[2] coordY 3.02333
+par Floor.user[3] typename "\"epidemicbroadcast.User\""
+par Floor.user[3] coordX 9.99041
+par Floor.user[3] coordY 1.46756
+par Floor.user[4] typename "\"epidemicbroadcast.User\""
+par Floor.user[4] coordX 2.36089
+par Floor.user[4] coordY 0.923386
+par Floor.user[5] typename "\"epidemicbroadcast.User\""
+par Floor.user[5] coordX 3.96581
+par Floor.user[5] coordY 1.8626
+par Floor.user[6] typename "\"epidemicbroadcast.User\""
+par Floor.user[6] coordX 3.87911
+par Floor.user[6] coordY 3.45561
+par Floor.user[7] typename "\"epidemicbroadcast.User\""
+par Floor.user[7] coordX 6.69746
+par Floor.user[7] coordY 3.96767
+par Floor.user[8] typename "\"epidemicbroadcast.User\""
+par Floor.user[8] coordX 9.35539
+par Floor.user[8] coordY 5.38817
+par Floor.user[9] typename "\"epidemicbroadcast.User\""
+par Floor.user[9] coordX 8.46311
+par Floor.user[9] coordY 4.19195
+par Floor typename "\"epidemicbroadcast.simulations.Floor\""
+par Floor userNumber 10
+par Floor floorX 10
+par Floor floorY 10
+par Floor slotDuration 1s
+attr unit s
+par Floor nSlot2Wait 5
+par Floor maxMsgCopies 3
+par Floor radius 8
+par Floor producerIndex 5
+scalar Floor coverageStat:sum 0.9
+attr "" ""
+attr recordingmode sum
+attr source covered
+scalar Floor simTimeEndStat:last 8
+attr "" ""
+attr recordingmode last
+attr source simTimeEndSig
+

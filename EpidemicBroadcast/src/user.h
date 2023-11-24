@@ -20,19 +20,21 @@ class User : public cSimpleModule
         //signals
         cTimestampedValue TimeStampedCollision;
         simsignal_t covered;
+        simsignal_t coveredStatus;
         simsignal_t collisionCounter;
 
         //pointers
         cMessage* timeMsg = nullptr;
         cMessage* msgToRelay = nullptr;
         cModule* supervisor = nullptr;
-        std::vector<cModule*> users;
+        std::vector<cModule*> neighbors;
 
         //status
         double coverageValue = 0.0;
         bool finished = false;
         int msgRcvAtSlot = -1;
         unsigned int base = 0;
+        std::string color = "white";
 
         //counters
         unsigned int elapsedTimeSlots = 0;
@@ -46,6 +48,8 @@ class User : public cSimpleModule
     protected:
         virtual void initialize() override;
         virtual void handleMessage(cMessage *msg) override;
+        virtual void refreshDisplay() const override;
+        virtual void finish() override;
 
 };
 

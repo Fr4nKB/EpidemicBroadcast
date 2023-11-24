@@ -16,16 +16,13 @@ class Supervisor : public cSimpleModule
         simsignal_t simTimeEndSig;
 
         //pointers
-        cMessage* syncMsg = nullptr;
         cMessage* waitMsg = nullptr;
-        cMessage* endMsg = nullptr;
 
         //status
-        bool ready = false;
         double endSimTime = 0.0;
 
         //counters
-        int activeNodes = 0;
+        int activeUsers = 0;
 
     protected:
         virtual void initialize() override;

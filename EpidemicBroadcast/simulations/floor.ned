@@ -27,7 +27,7 @@ network Floor
         //choose a random user as producer
         int producerIndex = default(intuniform(0, userNumber-1));
         
-        @statistic[simTimeEndStat](source="simTimeEndSig"; record=last;);  
+        @statistic[simTimeEndStat](source="simTimeEndSig"; record=last;);
         @statistic[coverageStat](source="covered"; record=sum;);
         
     submodules:
