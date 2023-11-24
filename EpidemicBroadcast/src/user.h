@@ -1,21 +1,8 @@
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
-
 #ifndef __EPIDEMICBROADCAST_USER_H_
 #define __EPIDEMICBROADCAST_USER_H_
 
+#include <string>
+#include <vector>
 #include <omnetpp.h>
 
 using namespace omnetpp;
@@ -28,28 +15,33 @@ class User : public cSimpleModule
         int nSlot2Wait = 0;
         int maxMsgCopies = 0;
         int producerIndex = 0;
+        double radiusSquared = 0.0;
 
         //signals
+        cTimestampedValue TimeStampedCollision;
         simsignal_t covered;
         simsignal_t collisionCounter;
 
         //pointers
         cMessage* timeMsg = nullptr;
         cMessage* msgToRelay = nullptr;
+        cModule* supervisor = nullptr;
+        std::vector<cModule*> users;
 
         //status
-        bool msgRelayed = false;
+        double coverageValue = 0.0;
+        bool finished = false;
         int msgRcvAtSlot = -1;
+        unsigned int base = 0;
 
         //counters
-        int elapsedTimeSlots = 0;
-        int msgRcvInCurrSlot = 0;
-        int totCopies = 0;
+        unsigned int elapsedTimeSlots = 0;
+        unsigned int msgRcvInCurrSlot = 0;
+        unsigned int totCopies = 0;
 
         //methods
         void handleTimeSlot(cMessage*);
         void broadcast();
-
 
     protected:
         virtual void initialize() override;
