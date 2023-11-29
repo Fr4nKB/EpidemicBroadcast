@@ -1,0 +1,75 @@
+file 1936 1700818752                                            
+version 3
+run General-1-20231124-10:38:44-20840
+attr configname General
+attr datetime 20231124-10:38:44
+attr datetimef 20231124-103844
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Floor
+attr processid 20840
+attr repetition 1
+attr replication #1
+attr resultdir results
+attr runnumber 1
+attr seedset 1
+config sim-time-limit 50s
+config network Floor
+config repeat 2
+config output-scalar-file results/General-1.sca
+config output-vector-file results/General-1.vec
+config Floor.userNumber 10
+config Floor.floorX 10
+config Floor.floorY 10
+config Floor.radius 8
+
+vector 0 Floor.user[6] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 1 Floor.user[7] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 2 Floor.user[8] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 3 Floor.user[9] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 4 Floor.user[1] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 5 Floor.user[2] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 6 Floor.user[3] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 7 Floor.user[4] coverageVectorStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source coveredStatus
+vector 8 Floor.user[0] collisionStat:vector ETV
+attr "" ""
+attr recordingmode vector
+attr source collision
+0	1759 20 14 77 0 6 2 0 1 1 1
+1	1779 20 15 78 0 6 2 0 1 1 1
+2	1799 20 16 79 0 6 2 0 1 1 1
+3	1819 20 17 80 0 6 2 0 1 1 1
+4	1839 21 23 120 1 7 2 0 2 2 4
+5	1860 21 24 121 1 7 2 0 2 2 4
+6	1881 21 25 122 1 7 2 0 2 2 4
+7	1902 21 26 123 1 7 2 0 2 2 4
+8	1923 11 119 119 7 7 1 4 4 4 16
+
