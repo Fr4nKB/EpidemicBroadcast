@@ -3,7 +3,7 @@ package epidemicbroadcast;
 simple User
 {
     parameters:
-        @display("b=1,1,rect,white");
+        @display("b=5,5,rect,white");
         double coordX = default(0);
         double coordY = default(0);
         

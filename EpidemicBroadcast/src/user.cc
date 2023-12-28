@@ -12,7 +12,6 @@ void User::initialize() {
 
     //retrieve all the other parameters
     int nUsers = (floor->par("userNumber").intValue());
-    coverageValue = 1.0/nUsers;
     slotDuration = floor->par("slotDuration").doubleValue();
     nSlot2Wait = floor->par("nSlot2Wait").intValue();
     maxMsgCopies = floor->par("maxMsgCopies").intValue();
@@ -46,7 +45,7 @@ void User::initialize() {
     if(this->getIndex() == producerIndex){
         msgToRelay = new cMessage("Hello!");
         broadcast();
-        emit(covered, coverageValue);
+        emit(covered, 1);
         color = "blue";
         finished = true;
     }
@@ -95,7 +94,7 @@ void User::handleTimeSlot(cMessage* msg) {
             //signal emission
             TimeStampedCollision.set(simtime_t(elapsedTimeSlots), uintval_t(0));
             emit(coveredStatus, &TimeStampedCollision);
-            emit(covered, coverageValue);
+            emit(covered, 1);
 
             //user signals to supervisor the ability to relay message
             sendDirect(new cMessage("inc"), supervisor, supervisor->gateBaseId("dirInGate"));

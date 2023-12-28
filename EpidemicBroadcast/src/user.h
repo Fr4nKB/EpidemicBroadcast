@@ -30,7 +30,6 @@ class User : public cSimpleModule
         std::vector<cModule*> neighbors;
 
         //status
-        double coverageValue = 0.0;
         bool finished = false;
         int msgRcvAtSlot = -1;
         unsigned int base = 0;
