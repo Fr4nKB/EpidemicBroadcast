@@ -44,6 +44,7 @@ void Supervisor::handleMessage(cMessage *msg) {
         if(activeUsers == 0) {
             endSimTime = (simTime()+slotDuration).dbl();
             //wait the time window before ending simulation as some user might still have to communicate their status
+            cancelEvent(waitMsg);
             scheduleAt(simTime()+(slotDuration*(nSlot2Wait+1)), waitMsg);
         }
     }

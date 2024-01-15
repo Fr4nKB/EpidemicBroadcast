@@ -13,7 +13,6 @@ void User::initialize() {
     //retrieve all the other parameters
     int nUsers = (floor->par("userNumber").intValue());
     slotDuration = floor->par("slotDuration").doubleValue();
-    nSlot2Wait = floor->par("nSlot2Wait").intValue();
     maxMsgCopies = floor->par("maxMsgCopies").intValue();
     producerIndex = floor->par("producerIndex").intValue();
     radiusSquared = floor->par("radius").doubleValue();
@@ -22,6 +21,7 @@ void User::initialize() {
     //build neighbors' list
     double coordX = this->par("coordX").doubleValue();
     double coordY = this->par("coordY").doubleValue();
+    nSlot2Wait = this->par("relayDelay").intValue();
     double diffX = 0.0, diffY = 0.0;
 
     neighbors.clear();

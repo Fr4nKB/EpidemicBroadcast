@@ -6,6 +6,7 @@ simple User
         @display("b=5,5,rect,white");
         double coordX = default(0);
         double coordY = default(0);
+        int relayDelay = default(1);
         
         @signal[covered](type="double");
         @signal[coveredStatus](type="unsigned short");

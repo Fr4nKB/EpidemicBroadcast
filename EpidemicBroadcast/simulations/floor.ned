@@ -41,6 +41,7 @@ network Floor
             parameters:
                 coordX = default(uniform(0, parent.floorX));
                 coordY = default(uniform(0, parent.floorY));
+                relayDelay = default(intuniform(0, parent.nSlot2Wait));
                 @display("p=$coordX, $coordY");
                 @display("r=$radius");
         }
